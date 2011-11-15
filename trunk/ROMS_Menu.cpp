@@ -204,10 +204,36 @@ double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project 
 		}
 	case 2: 
 		{
+		//DTC C.2 START
 		//B.2.b Total Sales for a Server
+			double sales_server = 0;
+
+			for(int i=0; i < orders.size(); ++i) {
 			
-			cout << "Not implemented" << endl;
+				if(ID == orders[i].get_server_id()) {
+
+					int order_id = orders[i].get_order_id();
+					for (int j = 0; j < (int)order_items.size(); ++j)
+						//select an order item for the current order
+						if(order_id == order_items[j].get_order_id()) {
+							int menu_item_id = order_items[j].get_menu_item_id();
+							double item_price = 0.;
+							for (int k = 0; k < (int) menu_items.size(); ++k) 
+								if(menu_item_id == menu_items[k].get_menu_item_id()) 
+								{
+									item_price = menu_items[k].get_price();
+									break;
+								}
+							//add the sale of this item to the table total
+							sales_server += item_price * order_items[j].get_qty();
+						}
+
+				}
+			}
+			return sales_server;
+			//cout << "Not implemented" << endl;
 			break;
+			//DTC C.2 END
 		}
 	case 3:
 		{
@@ -530,7 +556,7 @@ void ROMS_Menu::save_and_exit() const//JZ 11.7 B1
 		recipe<<ingredients[i].get_iid()<<"\t"<<ingredients[i].get_rec_id()<<"\t"<<ingredients[i].amount()<<"\t"<<ingredients[i].get_units()<<"\t"<<ingredients[i].get_name()<<endl;
     recipe<<recipes.size()<<endl;
     for (int i=0; i<recipes.size(); i++)
-        recipe<<recipes[i].get_rec_id()<<"\t"<<recipes[i].get_chef()<<"\t"<<recipes[i].get_instructions()<<" #"<<endl;
+        recipe<<recipes[i].get_rec_id()<<"\t"<<recipes[i].get_chef() + " "<<recipes[i].get_instructions()<<" #"<<endl;
     recipe.close();
     
     ofstream order;
@@ -571,3 +597,51 @@ int ROMS_Menu::updateOrderItem(int order_id, int menu_item_id, int qty, string s
 	order_items.push_back(Order_Item(seat_id, order_id, menu_item_id, qty));
 	return order_items.size();
 }
+
+//DTC C.2 Start
+//ADD menu item
+int ROMS_Menu::updateMenuItem(int menu_id, int cat_id, int recipe_id, string menu_item_name, double price, string description) {
+	
+	int i = 0;
+
+	// Check existence menu item id
+	for(i=0; i< menu_items.size(); ++i)
+		if(menu_items[i].get_menu_item_id() == menu_id) 
+			break;
+	if(!(i < menu_items.size())||!cin) 
+		return -1;
+
+	// Check existence order id
+	i = 0;
+	for(i=0; i < categories.size(); ++i)
+		if(categories[i].get_cat_id() == cat_id) 
+			break;
+	if(!(i < categories.size())||!cin) 
+		return -1;
+
+	// Check existence recipe id
+	i = 0;
+	for(i=0; i < recipes.size(); ++i) 
+		if(recipes[i].get_rec_id() == recipe_id)
+			break;
+	if(!(i < recipes.size()) || !cin)
+		return -1;
+
+	// Check if menu item name empty
+	if(menu_item_name.empty()) 
+		return -1;
+
+	// Check price
+	if(price < 0) 
+		return -1;
+
+	// Check if description is empty
+	if(description.empty())
+		return -1;
+
+	// Add menu item
+	menu_items.push_back(Menu_Item(menu_id, cat_id, recipe_id, menu_item_name, price, Description(description)));
+	return menu_items.size();
+}
+
+//DTC C.2 End

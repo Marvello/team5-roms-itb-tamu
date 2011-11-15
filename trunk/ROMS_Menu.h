@@ -1,4 +1,3 @@
-
 #ifndef ROMS_MENU_H_
 #define ROMS_MENU_H_
 
@@ -56,6 +55,7 @@ public:
    void read();		 
    void update();
    int updateOrderItem(int order_id, int menu_item_id, int qty, string seat_id); //Project II Part C.1 M.O.
+   int updateMenuItem(int menu_id, int cat_id, int recipe_id, string menu_item_name, double price, string description); //DTC C.2
    void show() const;
    string showCatagories() const; //Project II Part B.3 M.O.
    string showOrderItem() const;//Project II Part B.3 M.O.
