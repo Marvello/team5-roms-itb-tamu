@@ -149,14 +149,15 @@ void ROMS_Menu::show() const
 	}
 	
 }
-void ROMS_Menu::find() const 
+double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project II Part C.1 M.O.
 {	//Below is some old code from Part I. What changes, if any are needed for Part II?
 	//cout << "Find queries \n";
 	//B.2.a,b,c merge 
-	cout << "Enter find query number:" << endl;
-	cout << "1-Total Sales for a Table 2-Total Sales for a Server 3-Total Sales for a Menu Item\n";
-	int find_num;
-	cin >> find_num;
+
+	//cout << "Enter find query number:" << endl; //Delete Project II Part C.1 M.O.
+	//cout << "1-Total Sales for a Table 2-Total Sales for a Server 3-Total Sales for a Menu Item\n"; //Delete Project II Part C.1 M.O.
+	//int find_num;find_num //Delete Project II Part C.1 M.O.
+	//cin >> find_num; //Delete Project II Part C.1 M.O.
 	switch (find_num) 
 	{
 	case 1:
@@ -167,17 +168,18 @@ void ROMS_Menu::find() const
 			//read table id
 			//loop thru orders that have that table, pick order items for those orders, calc menu_item price * qty ordered and add to total
 			//print total
-			int table_id;
-			cout << "Enter Table ID: ";
-			cin >> table_id;
-			//validate category id
+			//int table_id;
+			//cout << "Enter Table ID: "; //Delete Project II Part C.1 M.O.
+			//cin >> table_id; //Delete Project II Part C.1 M.O.
+			//validate category id //Delete Project II Part C.1 M.O.
 			
 			double sales_total = 0;
 			//total up all sales for this table.
 			for (int i = 0; i < (int)orders.size(); ++i)
 			{
 				//select an order that includes this table
-				if(table_id == orders[i].get_table_id())
+				//if(table_id == orders[i].get_table_id())
+				if(ID == orders[i].get_table_id()) //Change from table_id to ID Project II Part C.1 M.O.
 				{
 					//add this order sales to the table sales total
 					int order_id = orders[i].get_order_id();
@@ -197,7 +199,7 @@ void ROMS_Menu::find() const
 						}
 				}
 			}
-			cout << " Table sales = "<< sales_total << endl;
+			return sales_total;
 			break;
 		}
 	case 2: 
@@ -273,7 +275,6 @@ void ROMS_Menu::update()
 		cout << "Invalid request\n";
 	}
 }
-
 
 string ROMS_Menu::showCatagories() const //Project II Part B.3 M.O.
 {
@@ -541,4 +542,32 @@ void ROMS_Menu::save_and_exit() const//JZ 11.7 B1
     for (int i=0; i<order_items.size(); i++)
 		order<<order_items[i].get_seat_id()<<"\t"<<order_items[i].get_order_id()<<"\t"<<order_items[i].get_menu_item_id()<<"\t"<<order_items[i].get_qty()<<endl;
     order.close();
+}
+
+//Function to update order items Project II Part C.1 M.O.
+int ROMS_Menu::updateOrderItem(int order_id, int menu_item_id, int qty, string seat_id) 
+{
+	//check that order_id exists
+	int n = 0;
+	for(n=0; n<(int)orders.size(); ++n)
+		if(orders[n].get_order_id() == order_id) break;
+	if(!(n < (int)orders.size())||!cin) return -1;
+	
+	//check that menu item id exists
+	n = 0;
+	for(n=0; n<(int)menu_items.size(); ++n)
+		if(menu_items[n].get_menu_item_id() == menu_item_id) break;
+	if(!(n < (int)menu_items.size())||!cin) return -1;
+	
+	//check that quantity is positive--maybe should check some reasonable upper bound, too?
+	if(qty < 1) 
+		return -1;
+	//check that seat is valid
+	
+	if(seat_id < "A" || seat_id > "H")
+		return -1;
+			
+	//add order item
+	order_items.push_back(Order_Item(seat_id, order_id, menu_item_id, qty));
+	return order_items.size();
 }
