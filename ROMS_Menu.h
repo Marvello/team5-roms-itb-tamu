@@ -55,10 +55,11 @@ public:
    void display_info() const;//display assignment info & your name plus "Project Part I"
    void read();		 
    void update();
+   int updateOrderItem(int order_id, int menu_item_id, int qty, string seat_id); //Project II Part C.1 M.O.
    void show() const;
    string showCatagories() const; //Project II Part B.3 M.O.
    string showOrderItem() const;//Project II Part B.3 M.O.
-   void find() const;
+   double find(int find_num, int ID);
    void read_recipes_ingredients(string);
    void Read_orders(string);
    void read_catprds(string);
@@ -66,8 +67,8 @@ public:
    	
   	
    //show functions added to support GUI interface
-   string show_button(Msg_type);
-   string show_title(string id); // DTC B.2
+	string show_button(Msg_type);
+	string show_title(string id); // DTC B.2
 
 	template <typename T>
 	string show_func(T t, string s)

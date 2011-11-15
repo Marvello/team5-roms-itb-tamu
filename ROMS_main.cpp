@@ -78,14 +78,18 @@ namespace Graph_lib {
 void do_about_box(Graph_lib::Window&);
 void do_about_help(Graph_lib::Window&);
 void do_read(Graph_lib::Window&, ROMS_Menu&, string, string, Msg_type);
+void do_find_table_sales (Graph_lib::Window&, ROMS_Menu&); //Project II Part C.1 M.O.
+void do_update_order_item (Graph_lib::Window&, ROMS_Menu&); //Project II Part C.1 M.O.
 void Main_Window_CB(Fl_Widget*, void*);
 void Menu_Bar_CB (Fl_Widget*, void*);
+
 
 //global data
 bool main_window_click = false;
 bool menu_bar_click = false;
 bool main_click_enabled = true;//used to force serialization on clicks
 int window_userdata;
+int button_selected;
 
 //main window menu bar
 //Note: for expediancy sake, to define the menu bar below we used an FLTK type Fl_Menu_Item. 
@@ -154,13 +158,25 @@ void oi_cb(Address addr, Address) // callback for order item button
 	Main_Window_CB((Fl_Widget*) addr, Address (Display_window));
 }
  void menu_bar_cb(Address addr, Address)//callback for menu bar
- {
-	 Menu_Bar_CB((Fl_Widget*) addr, Address (Menu_bar_cb));
- }
+{
+	Menu_Bar_CB((Fl_Widget*) addr, Address (Menu_bar_cb));
+}
+
+//callback for find sales by table Project II Part C.1 M.O.
+void find_table_cb(Address addr, Address)
+{
+	Menu_Bar_CB((Fl_Widget*) addr, Address (Find_table_sales));
+}
+//callback for update order item  Project II Part C.1 M.O.
+void update_order_item_cb(Address addr, Address)
+{
+	Menu_Bar_CB((Fl_Widget*) addr, Address (Update_add_order_item));
+}
 
 void Menu_Bar_CB (Fl_Widget*, void* ud) {
-	cout << "Menu Bar Callback" << " Userdata=" << (int) ud << "\n";
-	menu_bar_click = true;
+		cout << "Menu Bar Callback" << " Userdata=" << (int) ud << "\n";
+		button_selected = (int) ud;
+		menu_bar_click = true;
 }
 
 void Main_Window_CB(Fl_Widget*, void* ud) {
@@ -238,6 +254,12 @@ int main()
 					break; 
 				case Show_tables: //Project II Part B.3 M.O.
 					t.set_buffer(m.showOrderItem());
+					break;
+				case Find_table_sales: //Case for Find Total Sales By Table  Project II Part C.1 M.O.
+					do_find_table_sales(sw,m);
+					break;
+				case Update_add_order_item: //Case for Update Order Items Project II Part C.1 M.O.
+					do_update_order_item(sw,m);
 					break;
 				case About_info:
 					do_about_box(sw);
@@ -351,4 +373,105 @@ void do_read(Graph_lib::Window& w, ROMS_Menu& m, string dfn, string msg, Msg_typ
 		}
 	}
 	return;
+}
+
+//Procedure to find sales by table Project II Part C.1 M.O.
+void do_find_table_sales(Window& w, ROMS_Menu& menu) {
+        Window ab(Point(w.x()+100, w.y()+100), 400, 120, "Find Total Sales by Table"); //Create the Window
+        ab.color(Color::white);
+        ab.callback((Fl_Callback*)Menu_Bar_CB, Address (Close_about_box));
+
+        //text box
+		In_box TabInBox(Point(130,30), 110, 20,"Insert Table ID:"); // Inbox for the Table ID
+		ab.attach(TabInBox); // Attach Inbox to Windows
+        
+		//text
+        Text sum_txt(Point(60, 80), ""); //Text to show result
+        ab.attach(sum_txt); //Attach Text to Windows
+
+		//Button
+		Button Submit(Point(250,30),110,20,"Submit",find_table_cb); //Submit Button for find total sales
+		ab.attach(Submit);//Attach button to Windows
+		wait_for_menu_bar_click();
+
+		bool exit = false;
+        while(!exit) {
+				if(button_selected == Find_table_sales) { //If the button is pressed
+						double temp = menu.find(1,TabInBox.get_int()); //Get total sales for table ID in inbox
+						if (temp > 0)
+						{
+							cout <<"Total Sales For Table ID " << TabInBox.get_int() << " are $" << temp << endl; //For Debugging purpose
+							ostringstream oss; 
+							oss << "Total Sales For Table ID " << TabInBox.get_int() << " are $" << temp;
+							sum_txt.set_label(oss.str()); //Set the string to result Text
+							wait_for_menu_bar_click();
+						}
+						else
+						{
+							sum_txt.set_label("ID is invalid or inbox is empty"); //Set the string to result Text
+							wait_for_menu_bar_click();
+						}
+                }
+                //anything else
+                else {
+                        exit = true;
+                }
+        }
+		ab.detach(TabInBox); //Detach the inbox
+		ab.detach(sum_txt); //Detach the text
+		ab.detach(Submit); //Detach the button
+}
+
+//Procedure to update order item Project II Part C.1 M.O.
+void do_update_order_item (Window& w, ROMS_Menu& menu) {
+        Window ab(Point(w.x()+100, w.y()+100), 400, 200, "Find Table Box"); // Create the window
+        ab.color(Color::white);
+        ab.callback((Fl_Callback*)Menu_Bar_CB, Address (Close_about_box));
+
+        In_box input_order_item_id(Point(100,10), 80, 20, "Order Item ID:"); // Inbox for the order item id
+        In_box input_menu_item_id(Point(100,40), 80, 20, "Menu Item ID:"); // Inbox for the menu item id 
+        In_box input_seat_id(Point(100,70), 80, 20, "Seat ID:"); //Inbox for the seat id
+        In_box input_qty(Point(100,100), 80, 20, "Quantity:"); // Inbox for the quantity id
+		Text result(Point(100, 140), ""); //Text to show result
+        Button search_table(Point(220, 10), 150, 20, "Insert Order Item", update_order_item_cb);  // Create the button for search purpose - DS C update order item
+
+        ab.attach(input_order_item_id); // Attach the order item id inbox
+        ab.attach(input_menu_item_id); // Attach the menu item id inbox
+        ab.attach(input_seat_id); // Attach the seat id inbox
+        ab.attach(input_qty); // Attach the quantity inbox
+		ab.attach(result); //Attach the result text
+        ab.attach(search_table); // Attach the update button
+		wait_for_menu_bar_click();
+
+		bool exit = false;
+        while(!exit) {
+				if(button_selected == Update_add_order_item) { //If the button is pressed			
+						int temp = menu.updateOrderItem(input_order_item_id.get_int(),input_menu_item_id.get_int(),input_qty.get_int(),input_seat_id.get_string()); //Update the order item
+						cout << temp << endl; //for debugging purpose
+						if (temp > -1)
+						{
+							ostringstream oss; 
+							oss << "Order Item Successfully add. Number of order items is now " << temp;
+							result.set_label(oss.str());
+							wait_for_menu_bar_click();
+						}
+						else //If one the inbox is empty
+						{
+							result.set_label("Update Order Item Fail"); //Request for user entry
+							wait_for_menu_bar_click();
+						}
+
+				}
+                //anything else
+                else {
+                        exit = true;
+                }
+        }
+
+		ab.detach(input_order_item_id); // Detach the order item id inbox
+        ab.detach(input_menu_item_id); // Detach the menu item id inbox
+        ab.detach(input_seat_id); // Detach the seat id inbox
+        ab.detach(input_qty); // Detach the quantity inbox
+		ab.detach(result); // Detach the result text
+        ab.detach(search_table); // Detach the update button
 }
