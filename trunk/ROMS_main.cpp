@@ -354,12 +354,12 @@ int main()
 				case Tables_button: case Orders_button: case Categories_button: case Recipes_button: case Menu_items_button:
 					t.set_buffer(m.show_button((Msg_type) window_userdata).c_str());
 					break;
-        case Find_menu_item_sales://JZ C3
-          display_total_sales_for_menu_item(sw, m);
-          break;
-         case Update_add_recipe://JZ C3
-          add_recipe(sw, m);
-          break;           
+				case Find_menu_item_sales://JZ C3
+					display_total_sales_for_menu_item(sw, m);
+					break;
+				case Update_add_recipe://JZ C3
+					add_recipe(sw, m);
+					break;           
 				case Exit_program:
 					cout << "save files and exit\n";
 					m.save_and_exit(); //JZ B1
