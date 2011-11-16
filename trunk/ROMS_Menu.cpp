@@ -608,7 +608,7 @@ int ROMS_Menu::updateMenuItem(int menu_id, int cat_id, int recipe_id, string men
 	for(i=0; i< menu_items.size(); ++i)
 		if(menu_items[i].get_menu_item_id() == menu_id) 
 			break;
-	if(!(i < menu_items.size())||!cin) 
+	if((i < menu_items.size())||!cin) 
 		return -1;
 
 	// Check existence order id
@@ -674,20 +674,21 @@ int ROMS_Menu::add_recipe(int id, string chef, string instructions)
 {
     int i = 0;
     int num=0;
-    for(i=0; i< recipes.size(); ++i) // Check existence of recipe ID
+
+	for(i=0; i< recipes.size(); ++i) // Check existence of recipe ID
     {
         if(recipes[i].get_rec_id() == id) 
         {   
-            num=1; 
-            Recipe recipe(id,chef,Instructions(instructions));
-	        recipes.push_back(recipe);                       
             break;
         }
     }
-    if(!(i < recipes.size())||!cin) 
-        num=-1;
 
-    return num;
+	if((i < recipes.size())||!cin) 
+		return -1;
+
+	Recipe recipe(id,chef,Instructions(instructions));
+	recipes.push_back(recipe);                       
+    return 1;
 }
 
 //JZ C3 End
