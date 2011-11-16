@@ -139,6 +139,10 @@ void do_find_table_sales (Graph_lib::Window&, ROMS_Menu&); //Project II Part C.1
 void do_update_order_item (Graph_lib::Window&, ROMS_Menu&); //Project II Part C.1 M.O.
 void Main_Window_CB(Fl_Widget*, void*);
 void Menu_Bar_CB (Fl_Widget*, void*);
+void display_total_sales_for_menu_item(Window& w, ROMS_Menu& M);//JZ C3
+string call_function(int menu_item_id, ROMS_Menu& M);//JZ C3
+void add_recipe(Window& w, ROMS_Menu& M); //JZ C3
+string recipe_function(int id, string chef, string instr, ROMS_Menu& M);//JZ C3
 
 // Find category
 void find_table(Graph_lib::Window&, ROMS_Menu&);
@@ -223,7 +227,15 @@ void oi_cb(Address addr, Address) // callback for order item button
  {
 	 Menu_Bar_CB((Fl_Widget*) addr, Address (Menu_bar_cb));
  }
+ void find_menu_item_cb(Address addr, Address)//JZ C3
+{
+     Main_Window_CB((Fl_Widget*) addr, Address(Find_menu_item_button));
+}
 
+void add_recipe_cb(Address addr, Address)//JZ C3
+{
+     Main_Window_CB((Fl_Widget*) addr, Address(Add_recipe_button));
+}
 
 
 // DTC C.2 Start
@@ -342,6 +354,12 @@ int main()
 				case Tables_button: case Orders_button: case Categories_button: case Recipes_button: case Menu_items_button:
 					t.set_buffer(m.show_button((Msg_type) window_userdata).c_str());
 					break;
+        case Find_menu_item_sales://JZ C3
+          display_total_sales_for_menu_item(sw, m);
+          break;
+         case Update_add_recipe://JZ C3
+          add_recipe(sw, m);
+          break;           
 				case Exit_program:
 					cout << "save files and exit\n";
 					m.save_and_exit(); //JZ B1
@@ -676,3 +694,133 @@ void update_menu_item(Graph_lib::Window& w, ROMS_Menu &m) {
 }
 
 // DTC C2 END
+
+
+void display_total_sales_for_menu_item(Window& w, ROMS_Menu& M) //JZ C3
+{
+    Window win(Point(100, 100), 300, 300, "Total sales for menu item");
+    win.color(Color::white);
+	Text msg1(Point(15,50), "Display total sales for menu item");
+	msg1.set_color(Color::black);
+	win.attach(msg1);
+	In_box in1(Point(100,60), 50, 30, "Menu Item ID: ");
+	win.attach(in1);
+	Text total(Point(50, 100), "Total Sales: ");
+	total.set_color(Color::black);
+	win.attach(total);
+	Button mi_button(Point(150,150), 50, 20, "Find", find_menu_item_cb);
+	win.attach(mi_button);
+	try
+    {
+        while(true)
+    	{
+    		main_click_enabled=true;
+    		wait_for_main_window_click();
+    		cout<<"Act on userdata="<<window_userdata<<endl;
+    		switch(window_userdata)
+    		{
+             case Find_menu_item_button:
+                  total.set_label(call_function(in1.get_int(), M));
+                  break;
+             default:
+                     cout<<"Case not implemented"<<endl;	
+            }
+    	}                      
+    }
+	
+	catch(exception& e)
+	{
+        cerr<<"exception: "<<e.what()<<endl;
+        return;
+    }
+    catch (...)
+    {
+          cerr<<"some exception: "<<endl;
+          return;
+    }
+    
+    win.detach(msg1);
+    win.detach(in1);
+    win.detach(mi_button);
+	return;
+}
+
+string call_function(int menu_item_id, ROMS_Menu& M)//JZ C3
+{
+    stringstream sstr;
+    double total=M.display_total_sales_for_menuitem(menu_item_id);
+    if(total==0)
+        return "No sales found for given menu item";
+    sstr<<"Total Sales: $"<<total;
+    return sstr.str();
+}
+
+void add_recipe(Window& w, ROMS_Menu& M) //JZ C3 Update
+{
+    Window win(Point(100, 100), 300, 300, "Add Recipe");
+    win.color(Color::white);
+    win.callback((Fl_Callback*)Menu_Bar_CB, Address (Close_about_box));
+	In_box in1(Point(50,60), 50, 30, "Recipe ID: ");
+	win.attach(in1);
+	In_box in2(Point(50,80), 50, 30, "Chef Name: ");
+	win.attach(in2);
+	In_box in3(Point(50,100), 150, 20, "Instructions: ");
+	win.attach(in3);
+	Text results(Point(50, 150), ""); 
+	results.set_color(Color::black);
+	win.attach(results);
+	Button recipe_button(Point(175,250), 50, 20, "Add", add_recipe_cb);
+	win.attach(recipe_button);
+
+	try
+    {                 
+         while(true) 
+         {
+            main_click_enabled=true;    
+            wait_for_main_window_click();     
+            cout<<"Act on userdata="<<window_userdata<<endl;
+    		switch(window_userdata)
+    		{
+                 case Add_recipe_button:  
+                        results.set_label(recipe_function(in1.get_int(),in2.get_string(), in3.get_string(), M));       
+                        break;
+                 default:
+                         cout<<"Case not implemented"<<endl;
+            }
+        }             
+    }
+	
+	catch(exception& e)
+	{
+        cerr<<"exception: "<<e.what()<<endl;
+        return;
+    }
+    catch (...)
+    {
+          cerr<<"some exception: "<<endl;
+          return;
+    }
+    
+    win.detach(in1);
+    win.detach(in2);
+    win.detach(in3);
+    win.detach(results);
+    win.detach(recipe_button);
+	return;
+}
+
+string recipe_function(int id, string chef, string instr, ROMS_Menu& M)//JZ C3
+{
+    int answer=M.add_recipe(id, chef,instr);
+    stringstream oss;
+
+    if (answer > -1)
+    { 
+            oss << "Update Success";
+    }
+    else //If one the inbox is empty
+    {
+            oss<<"Update Fail"; //Request for user entry
+    }
+    return oss.str();
+}
