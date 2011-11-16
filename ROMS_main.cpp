@@ -712,18 +712,20 @@ void display_total_sales_for_menu_item(Window& w, ROMS_Menu& M) //JZ C3
 	win.attach(mi_button);
 	try
     {
-        while(true)
+		bool exit = false;
+        while(!exit)
     	{
     		main_click_enabled=true;
     		wait_for_main_window_click();
     		cout<<"Act on userdata="<<window_userdata<<endl;
     		switch(window_userdata)
     		{
-             case Find_menu_item_button:
-                  total.set_label(call_function(in1.get_int(), M));
-                  break;
-             default:
-                     cout<<"Case not implemented"<<endl;	
+				case Find_menu_item_button:
+				total.set_label(call_function(in1.get_int(), M));
+                break;
+				default:
+				cout<<"Case not implemented"<<endl;
+				exit = true;
             }
     	}                      
     }
@@ -762,9 +764,9 @@ void add_recipe(Window& w, ROMS_Menu& M) //JZ C3 Update
     win.callback((Fl_Callback*)Menu_Bar_CB, Address (Close_about_box));
 	In_box in1(Point(50,60), 50, 30, "Recipe ID: ");
 	win.attach(in1);
-	In_box in2(Point(50,80), 50, 30, "Chef Name: ");
+	In_box in2(Point(50,90), 50, 30, "Chef Name: ");
 	win.attach(in2);
-	In_box in3(Point(50,100), 150, 20, "Instructions: ");
+	In_box in3(Point(50,120), 150, 20, "Instructions: ");
 	win.attach(in3);
 	Text results(Point(50, 150), ""); 
 	results.set_color(Color::black);
@@ -773,8 +775,9 @@ void add_recipe(Window& w, ROMS_Menu& M) //JZ C3 Update
 	win.attach(recipe_button);
 
 	try
-    {                 
-         while(true) 
+    {                
+		bool exit = false;
+         while(!exit) 
          {
             main_click_enabled=true;    
             wait_for_main_window_click();     
@@ -786,6 +789,7 @@ void add_recipe(Window& w, ROMS_Menu& M) //JZ C3 Update
                         break;
                  default:
                          cout<<"Case not implemented"<<endl;
+						 exit = true;
             }
         }             
     }
