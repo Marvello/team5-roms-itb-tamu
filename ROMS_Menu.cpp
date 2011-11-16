@@ -645,3 +645,49 @@ int ROMS_Menu::updateMenuItem(int menu_id, int cat_id, int recipe_id, string men
 }
 
 //DTC C.2 End
+
+//JZ C3 Begin
+double ROMS_Menu::display_total_sales_for_menuitem(int menu_item_id) 
+{
+    double total=0.0;
+    double price=0.0;
+    double qty=0.0;
+	for (int i=0; i<menu_items.size(); i++)
+	{
+        if (menu_items[i].get_menu_item_id()==menu_item_id)
+        {
+            price=menu_items[i].get_price();  //have price                                            
+            for (int j=0; j<order_items.size(); j++)
+            {
+                if (order_items[j].get_menu_item_id()==menu_item_id)
+                {
+                    qty=order_items[j].get_qty();        //have quantity                                      
+                    total+=(qty *price);
+                }     
+            }
+        }
+    }   
+    return total;
+}
+
+int ROMS_Menu::add_recipe(int id, string chef, string instructions)
+{
+    int i = 0;
+    int num=0;
+    for(i=0; i< recipes.size(); ++i) // Check existence of recipe ID
+    {
+        if(recipes[i].get_rec_id() == id) 
+        {   
+            num=1; 
+            Recipe recipe(id,chef,Instructions(instructions));
+	        recipes.push_back(recipe);                       
+            break;
+        }
+    }
+    if(!(i < recipes.size())||!cin) 
+        num=-1;
+
+    return num;
+}
+
+//JZ C3 End
