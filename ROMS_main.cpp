@@ -94,7 +94,6 @@ public:
   }
 };
 
-
 /*
  Draw the sample text.
  */
@@ -105,7 +104,6 @@ void FontDisplay::draw(void)
   fl_color(FL_BLACK);
   fl_draw(label(), x() + 3, y() + 3, w() - 6, h() - 6, align());
 }
-
 
 int FontDisplay::test_fixed_pitch(void)
 {
@@ -134,6 +132,7 @@ int FontDisplay::test_fixed_pitch(void)
 //header declarations
 void do_about_box(Graph_lib::Window&);
 void do_about_help(Graph_lib::Window&);
+void do_grafTotSales(Graph_lib::Window&, ROMS_Menu&);
 void do_read(Graph_lib::Window&, ROMS_Menu&, string, string, Msg_type);
 void do_find_table_sales (Graph_lib::Window&, ROMS_Menu&); //Project II Part C.1 M.O.
 void do_update_order_item (Graph_lib::Window&, ROMS_Menu&); //Project II Part C.1 M.O.
@@ -186,6 +185,9 @@ Fl_Menu_Item menu_bar[] = {
  {"Add Order Item", 0,  (Fl_Callback*)Main_Window_CB, Address (Update_add_order_item), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Menu Item", 0,  (Fl_Callback*)Main_Window_CB, Address (Update_add_menu_item), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Add Recipe", 0,  (Fl_Callback*)Main_Window_CB, Address (Update_add_recipe), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {0,0,0,0,0,0,0,0,0},
+ {"Graf", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Total sales by month", 0,  (Fl_Callback*)Main_Window_CB, Address (Graf_totsales), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"About", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Info", 0,  (Fl_Callback*)Main_Window_CB, Address (About_info), 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -383,6 +385,9 @@ int main()
 					update_menu_item(sw, m);
 					break;
 				// DTC C2 END //
+				case Graf_totsales: //Case if the Total Sales Graf Being called
+					do_grafTotSales(sw,m);
+					break;
 				default:
 					cout << "case not implemented\n";
 			}
@@ -827,4 +832,130 @@ string recipe_function(int id, string chef, string instr, ROMS_Menu& M)//JZ C3
             oss<<"Update Fail"; //Request for user entry
     }
     return oss.str();
+}
+
+void do_grafTotSales(Graph_lib::Window& w, ROMS_Menu& M) //Project Part D.1 M.O
+{
+	
+	class Scale {                // data value to coordinate conversion
+		int cbase;               // coordinate base
+		int vbase;               // base of values
+		double scale;
+		public:
+		Scale(int b, int vb, double s) :cbase(b), vbase(vb), scale(s) { }
+		int operator()(int v) const { return cbase + (v-vbase)*scale; }
+	};
+	
+	map<Point,double> TotSales = M.grafTotalSales(); // Get the total Sales sort by month
+	map<Point,double>::iterator iter; // Iterator For map
+
+	const int xmax = 850;
+	const int ymax = 600;
+	const int xoffset = 100;
+	const int yoffset = 60;
+	const int xspace = 40;
+	const int yspace = 40;
+	
+	const int xlength = (xmax-50)-xoffset-xspace;   
+    const int ylength = ymax-yoffset-yspace;
+	
+	// Create window
+	Graph_lib::Window win(Point(w.x()+100, w.y()+100), xmax, ymax, "Total Sales Graph By Month");
+	win.callback((Fl_Callback*)Menu_Bar_CB, Address (Close_about_box));
+	
+	//Get Total Sales First Month
+	iter = TotSales.begin();
+	const int first_point = iter->first.x;				
+
+	//Get Total Sales last Month
+	iter = TotSales.end();
+	--iter;
+	const int last_point = iter->first.x;
+
+	// Scale of x values
+	const double xscale = double(xlength)/(last_point - first_point);
+	// Scale of y values 
+	const double yscale = double(ylength)/100; 
+	//Create Scale for X and Y axis
+	Scale ys(ymax-yoffset,0,-yscale);
+	Scale xs(xoffset,first_point,xscale);
+	
+	// Create polyline for point
+	Open_polyline object1;
+	
+	//Create Axis
+	Axis smbx(Axis::x, Point(xoffset,ymax-yoffset), xlength, (last_point - first_point), "Date");
+	smbx.label.move(570, -15);
+	Axis smby(Axis::y, Point(xoffset,ymax-yoffset), ylength, 5,"Total Sales");
+	//Attach the axis
+	win.attach(smbx);
+	win.attach(smby);
+
+	//Text For labeling the axis
+	Text range1(Point(xoffset-35, (ymax-yoffset)), "$0"); 
+	Text range2(Point(xoffset-35, (ymax-yoffset) - 100), "$100");
+	Text range3(Point(xoffset-35, (ymax-yoffset) - 200), "$200");
+	Text range4(Point(xoffset-35, (ymax-yoffset) - 300), "$300");
+	Text range5(Point(xoffset-35, (ymax-yoffset) - 400), "$400");
+	Text range6(Point(xoffset-35, (ymax-yoffset) - 500), "$500");
+	win.attach(range1);
+	win.attach(range2);
+	win.attach(range3);
+	win.attach(range4);
+	win.attach(range5);
+	win.attach(range6);
+
+	Text month_1(Point(xs(2)-5,(xoffset, ymax-yoffset)+ 20),"Feb");
+	Text month_2(Point(xs(3)-5,(xoffset, ymax-yoffset)+ 20),"Mar");
+	Text month_3(Point(xs(4)-5,(xoffset, ymax-yoffset)+ 20),"Apr");
+	Text month_4(Point(xs(5)-5,(xoffset, ymax-yoffset)+ 20),"May");
+	Text month_5(Point(xs(6)-5,(xoffset, ymax-yoffset)+ 20),"Jun");
+	Text month_6(Point(xs(7)-5,(xoffset, ymax-yoffset)+ 20),"Jul");
+	Text month_7(Point(xs(8)-5,(xoffset, ymax-yoffset)+ 20),"Aug");
+	Text month_8(Point(xs(9)-5,(xoffset, ymax-yoffset)+ 20),"Sep");
+	Text month_9(Point(xs(10)-5,(xoffset, ymax-yoffset)+ 20),"Okt");
+	win.attach(month_1);
+	win.attach(month_2);
+	win.attach(month_3);
+	win.attach(month_4);
+	win.attach(month_5);
+	win.attach(month_6);
+	win.attach(month_7);
+	win.attach(month_8);
+	win.attach(month_9);
+
+	//Insert The total sales into a open polyline
+	for (iter=TotSales.begin(); iter!=TotSales.end();iter++)
+	{
+		cout << iter->first.x << " = " << iter->second << endl;
+		object1.add(Point(xs(iter->first.x), ys(iter->second/10)));
+	}
+	
+	// Customize the polyline
+	object1.set_color(Color::blue);
+
+	// Attach the object
+	win.attach(object1);
+
+	wait_for_menu_bar_click();
+
+	//Detach All Variable
+	win.detach(smbx);
+	win.detach(smby);
+	win.detach(range1);
+	win.detach(range2);
+	win.detach(range3);
+	win.detach(range4);
+	win.detach(range5);
+	win.detach(range6);
+	win.detach(month_1);
+	win.detach(month_2);
+	win.detach(month_3);
+	win.detach(month_4);
+	win.detach(month_5);
+	win.detach(month_6);
+	win.detach(month_7);
+	win.detach(month_8);
+	win.detach(month_9);
+	win.detach(object1);
 }
