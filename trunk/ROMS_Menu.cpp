@@ -131,7 +131,7 @@ void ROMS_Menu::show() const
 				//loop thru sorted recipes and print requested coresponding Menu_Item info
 				for (int j = 0; j< (int) menu_items.size(); ++j)
 					if (menu_items[j].get_recipe_id() == temp_recipes[i].get_rec_id())
-							cout << '\t' << menu_items[i].display() << endl;
+						cout << '\t' << menu_items[i].display() << endl;
 			}
 			cout << endl;
 			break;
@@ -143,11 +143,11 @@ void ROMS_Menu::show() const
 			cout << endl;
 			break;
 		}
-	
+
 	default:
 		cout << "Invalid request\n";
 	}
-	
+
 }
 double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project II Part C.1 M.O.
 {	//Below is some old code from Part I. What changes, if any are needed for Part II?
@@ -172,7 +172,7 @@ double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project 
 			//cout << "Enter Table ID: "; //Delete Project II Part C.1 M.O.
 			//cin >> table_id; //Delete Project II Part C.1 M.O.
 			//validate category id //Delete Project II Part C.1 M.O.
-			
+
 			double sales_total = 0;
 			//total up all sales for this table.
 			for (int i = 0; i < (int)orders.size(); ++i)
@@ -194,8 +194,8 @@ double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project 
 									item_price = menu_items[k].get_price();
 									break;
 								}
-							//add the sale of this item to the table total
-							sales_total += item_price * order_items[j].get_qty();
+								//add the sale of this item to the table total
+								sales_total += item_price * order_items[j].get_qty();
 						}
 				}
 			}
@@ -204,12 +204,12 @@ double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project 
 		}
 	case 2: 
 		{
-		//DTC C.2 START
-		//B.2.b Total Sales for a Server
+			//DTC C.2 START
+			//B.2.b Total Sales for a Server
 			double sales_server = 0;
 
 			for(int i=0; i < orders.size(); ++i) {
-			
+
 				if(ID == orders[i].get_server_id()) {
 
 					int order_id = orders[i].get_order_id();
@@ -224,8 +224,8 @@ double ROMS_Menu::find(int find_num, int ID)  //Add Parameter for input Project 
 									item_price = menu_items[k].get_price();
 									break;
 								}
-							//add the sale of this item to the table total
-							sales_server += item_price * order_items[j].get_qty();
+								//add the sale of this item to the table total
+								sales_server += item_price * order_items[j].get_qty();
 						}
 
 				}
@@ -278,7 +278,7 @@ void ROMS_Menu::update()
 			//check that seat is valid
 			if(seat_id < "A" || seat_id > "H")
 				throw InvalidData();
-			
+
 			//add order item
 			order_items.push_back(Order_Item(seat_id, order_id, menu_item_id, qty));
 
@@ -315,11 +315,11 @@ string ROMS_Menu::showCatagories() const //Project II Part B.3 M.O.
 	for (int i=0;i<categories.size();i++) //For every catagories exist
 	{
 		oss << categories[i].display() << "\n"; //Insert Catagories into buffer
-			for (int j=0;j<menu_items.size();j++) //For every menu item exist
-			{
-				if (menu_items[j].get_cat_id() == categories[i].get_cat_id()) //If menu item have the same catagories ID
-					oss << setw(25) << setfill(' ') << "" << setw(5) << right << menu_items[j].get_name() << "\n"; //Insert menu item into buffer
-			}
+		for (int j=0;j<menu_items.size();j++) //For every menu item exist
+		{
+			if (menu_items[j].get_cat_id() == categories[i].get_cat_id()) //If menu item have the same catagories ID
+				oss << setw(25) << setfill(' ') << "" << setw(5) << right << menu_items[j].get_name() << "\n"; //Insert menu item into buffer
+		}
 		oss << "\n" << setw(50) << setfill('-') << "-" << "\n"; //Adding enter for each catagory
 	}
 	return oss.str(); //return Buffer
@@ -331,25 +331,25 @@ string ROMS_Menu::showOrderItem() const //Project II Part B.3 M.O.
 	ostringstream oss;
 
 	oss << left << setw(10) << "Order Id" <<
-			left << setw(11) << "Server Id" << 
-			left << setw(10) << "Table Id" << 
-			right << "Order Date" << "\t" <<  
-			left << setw(15) << "Order Time" << 
-			left << setw(9) << "Seat Id" << 
-			left << setw(11) << "M Item Id" << 
-			left << setw(8) << "Prod Qty" << "\n" <<
-			
-			setw(100) << setfill('-') << "-" << "\n";
+		left << setw(11) << "Server Id" << 
+		left << setw(10) << "Table Id" << 
+		right << "Order Date" << "\t" <<  
+		left << setw(15) << "Order Time" << 
+		left << setw(9) << "Seat Id" << 
+		left << setw(11) << "M Item Id" << 
+		left << setw(8) << "Prod Qty" << "\n" <<
+
+		setw(100) << setfill('-') << "-" << "\n";
 
 
 	for (int i=0;i<orders.size();i++) //For every order exist
 	{
 		oss << orders[i].display() << "\n"; //Insert order into Buffer
-			for (int j=0;j<order_items.size();j++) //For every order item exist
-			{
-				if (order_items[j].get_order_id() == orders[i].get_order_id()) //if order item have the same order ID
-					oss << setw(62) << setfill(' ') << "" << setw(9) << left <<  order_items[j].get_seat() << setw(11) << order_items[j].get_menu_item_id() << setw(8) << left << order_items[j].get_qty() <<  "\n" ; //Insert order item into buffer
-			}
+		for (int j=0;j<order_items.size();j++) //For every order item exist
+		{
+			if (order_items[j].get_order_id() == orders[i].get_order_id()) //if order item have the same order ID
+				oss << setw(62) << setfill(' ') << "" << setw(9) << left <<  order_items[j].get_seat() << setw(11) << order_items[j].get_menu_item_id() << setw(8) << left << order_items[j].get_qty() <<  "\n" ; //Insert order item into buffer
+		}
 		oss << "\n" << setw(100) << setfill('-') << "-" << "\n"; //Adding enter for each catagory
 	}
 	return oss.str(); //return buffer
@@ -404,10 +404,10 @@ void ROMS_Menu::read_file(ifstream& file, int num_rec, Rec_type ftype)
 	string units, name;
 
 	//Recipe_ID Chef_name Instructions # 
-		//example recipe data:	3015	Astrid	1. Liquidise the prawn meat till smooth. Mix in the tapioca flour, salt and pepper. Mix well into a stiff dough.
-//2. Divide dough into three equal portions. Roll up each portion then place the rolls on a greased plate. Steam for 40 to 45 minutes over high flame.
-//3.Leave the rolls to cool, then wrap with a clean tea towel. Chill well in the refrigerator. Use a very sharp knife to slice thinly. Thoroughly dry the cut-out pieces in the sun.
-//4. Deep-fry the crackers   #	
+	//example recipe data:	3015	Astrid	1. Liquidise the prawn meat till smooth. Mix in the tapioca flour, salt and pepper. Mix well into a stiff dough.
+	//2. Divide dough into three equal portions. Roll up each portion then place the rolls on a greased plate. Steam for 40 to 45 minutes over high flame.
+	//3.Leave the rolls to cool, then wrap with a clean tea towel. Chill well in the refrigerator. Use a very sharp knife to slice thinly. Thoroughly dry the cut-out pieces in the sun.
+	//4. Deep-fry the crackers   #	
 	//int rec_id;
 	string chef_name;
 	string instr;
@@ -417,34 +417,34 @@ void ROMS_Menu::read_file(ifstream& file, int num_rec, Rec_type ftype)
 	while(file && i < num_rec)
 	{
 		switch(ftype) {	//Rec_type{ Cats=1, Menu_entry, Rec, Ingred, Ord, Ord_item };
-			case ROMS_Menu::Rec:
-				file >> rec_id >> chef_name;
-				instr = get_long_string(file);
-				recipes.push_back(Recipe(rec_id, chef_name, Instructions(instr)));
-				break;
-			case ROMS_Menu::Ingred:
-				file >> ingred_id >> rec_id >> amt_req >> units >> name;
-				ingredients.push_back(Ingredient(ingred_id, rec_id, amt_req, units, name));
-				break;
-			case ROMS_Menu::Ord:
-				file >> order_id >> server_id >> table_id >> order_year >> order_month >> order_day >> order_hour >> order_minute;
-				orders.push_back(Order(order_id, server_id, table_id, Date(order_year, (Date::Month)order_month, order_day), Time(order_hour,order_minute)));
-				break;
-			case ROMS_Menu::Ord_item:
-				file >> seat_id >> order_id >> menu_item_id >> ord_qty;
-				order_items.push_back(Order_Item(seat_id, order_id, menu_item_id, ord_qty));
-				break;
-			case ROMS_Menu::Cats:
-				file >> cat_id >> cat_name;
-				categories.push_back(Category(cat_id, cat_name));
-				break;
-			case ROMS_Menu::Menu_entry:
-				file >> menu_item_id >> cat_id >> rec_id >> item_name >> item_price;
-				item_dscrp = get_long_string(file);
-				menu_items.push_back(Menu_Item(menu_item_id, cat_id, rec_id, item_name, item_price, Description(item_dscrp)));
-				break;
-			default:
-				throw InvalidData();
+		case ROMS_Menu::Rec:
+			file >> rec_id >> chef_name;
+			instr = get_long_string(file);
+			recipes.push_back(Recipe(rec_id, chef_name, Instructions(instr)));
+			break;
+		case ROMS_Menu::Ingred:
+			file >> ingred_id >> rec_id >> amt_req >> units >> name;
+			ingredients.push_back(Ingredient(ingred_id, rec_id, amt_req, units, name));
+			break;
+		case ROMS_Menu::Ord:
+			file >> order_id >> server_id >> table_id >> order_year >> order_month >> order_day >> order_hour >> order_minute;
+			orders.push_back(Order(order_id, server_id, table_id, Date(order_year, (Date::Month)order_month, order_day), Time(order_hour,order_minute)));
+			break;
+		case ROMS_Menu::Ord_item:
+			file >> seat_id >> order_id >> menu_item_id >> ord_qty;
+			order_items.push_back(Order_Item(seat_id, order_id, menu_item_id, ord_qty));
+			break;
+		case ROMS_Menu::Cats:
+			file >> cat_id >> cat_name;
+			categories.push_back(Category(cat_id, cat_name));
+			break;
+		case ROMS_Menu::Menu_entry:
+			file >> menu_item_id >> cat_id >> rec_id >> item_name >> item_price;
+			item_dscrp = get_long_string(file);
+			menu_items.push_back(Menu_Item(menu_item_id, cat_id, rec_id, item_name, item_price, Description(item_dscrp)));
+			break;
+		default:
+			throw InvalidData();
 		}
 		++i;
 	}
@@ -523,51 +523,51 @@ string ROMS_Menu::show_button(Msg_type type)
 		return show_func(menu_items, "Menu Items");
 	case Recipes_button:
 		return show_func(order_items, "Order Items");
-	/* DTC B.2 */
+		/* DTC B.2 */
 	case Show_order:
 		return show_func(orders, "Orders");
 	case Show_recipe:
 		return show_func(recipes, "Recipes");
 	case Show_menu:
 		return show_func(menu_items, "Menu");
-	/* DTC B.2 */
+		/* DTC B.2 */
 
 	default:
 		throw InvalidType();
-}
+	}
 }
 
 void ROMS_Menu::save_and_exit() const//JZ 11.7 B1
 {
-    ofstream cat;
-    cat.open("catmenu.dat");//updates catmenu.dat
-    cat<<ROMS_Menu::categories.size()<<endl;
-    for(int i=0;i<categories.size();i++)
-        cat<< categories[i].get_cat_id() << "\t" << categories[i].get_catname() << endl;
-    cat << menu_items.size() << endl;
-    for(int i=0;i<menu_items.size();i++)
-        cat << menu_items[i].get_menu_item_id() << "\t" << menu_items[i].get_cat_id() << "\t" << menu_items[i].get_recipe_id() << "\t" << menu_items[i].get_name() << "\t" << menu_items[i].get_price() << "\t" << menu_items[i].get_description()<< " #" << endl;
-    cat.close();
-    
-    ofstream recipe;
-    recipe.open("recipes.dat"); //updates recipes.dat
-    recipe<<ingredients.size()<<endl;
-    for (int i=0; i<ingredients.size(); i++)
+	ofstream cat;
+	cat.open("catmenu.dat");//updates catmenu.dat
+	cat<<ROMS_Menu::categories.size()<<endl;
+	for(int i=0;i<categories.size();i++)
+		cat<< categories[i].get_cat_id() << "\t" << categories[i].get_catname() << endl;
+	cat << menu_items.size() << endl;
+	for(int i=0;i<menu_items.size();i++)
+		cat << menu_items[i].get_menu_item_id() << "\t" << menu_items[i].get_cat_id() << "\t" << menu_items[i].get_recipe_id() << "\t" << menu_items[i].get_name() << "\t" << menu_items[i].get_price() << "\t" << menu_items[i].get_description()<< " #" << endl;
+	cat.close();
+
+	ofstream recipe;
+	recipe.open("recipes.dat"); //updates recipes.dat
+	recipe<<ingredients.size()<<endl;
+	for (int i=0; i<ingredients.size(); i++)
 		recipe<<ingredients[i].get_iid()<<"\t"<<ingredients[i].get_rec_id()<<"\t"<<ingredients[i].amount()<<"\t"<<ingredients[i].get_units()<<"\t"<<ingredients[i].get_name()<<endl;
-    recipe<<recipes.size()<<endl;
-    for (int i=0; i<recipes.size(); i++)
-        recipe<<recipes[i].get_rec_id()<<"\t"<<recipes[i].get_chef() + " "<<recipes[i].get_instructions()<<" #"<<endl;
-    recipe.close();
-    
-    ofstream order;
-    order.open("orders.dat");//updates orders.dat
-    order<<orders.size()<<endl;
-    for (int i=0; i<orders.size(); i++)
-        order<<orders[i].get_order_id()<<"\t"<<orders[i].get_server_id()<<"\t"<<orders[i].get_table_id()<<"\t"<<orders[i].get_date().year()<<"\t"<<orders[i].get_date().month()<<"\t"<<orders[i].get_date().day()<<"\t"<<"\t"<<orders[i].get_time().get_hour()<<"\t"<<orders[i].get_time().get_minute()<<endl;
-    order<<order_items.size()<<endl; 
-    for (int i=0; i<order_items.size(); i++)
+	recipe<<recipes.size()<<endl;
+	for (int i=0; i<recipes.size(); i++)
+		recipe<<recipes[i].get_rec_id()<<"\t"<<recipes[i].get_chef() + " "<<recipes[i].get_instructions()<<" #"<<endl;
+	recipe.close();
+
+	ofstream order;
+	order.open("orders.dat");//updates orders.dat
+	order<<orders.size()<<endl;
+	for (int i=0; i<orders.size(); i++)
+		order<<orders[i].get_order_id()<<"\t"<<orders[i].get_server_id()<<"\t"<<orders[i].get_table_id()<<"\t"<<orders[i].get_date().year()<<"\t"<<orders[i].get_date().month()<<"\t"<<orders[i].get_date().day()<<"\t"<<"\t"<<orders[i].get_time().get_hour()<<"\t"<<orders[i].get_time().get_minute()<<endl;
+	order<<order_items.size()<<endl; 
+	for (int i=0; i<order_items.size(); i++)
 		order<<order_items[i].get_seat_id()<<"\t"<<order_items[i].get_order_id()<<"\t"<<order_items[i].get_menu_item_id()<<"\t"<<order_items[i].get_qty()<<endl;
-    order.close();
+	order.close();
 }
 
 //Function to update order items Project II Part C.1 M.O.
@@ -578,21 +578,21 @@ int ROMS_Menu::updateOrderItem(int order_id, int menu_item_id, int qty, string s
 	for(n=0; n<(int)orders.size(); ++n)
 		if(orders[n].get_order_id() == order_id) break;
 	if(!(n < (int)orders.size())||!cin) return -1;
-	
+
 	//check that menu item id exists
 	n = 0;
 	for(n=0; n<(int)menu_items.size(); ++n)
 		if(menu_items[n].get_menu_item_id() == menu_item_id) break;
 	if(!(n < (int)menu_items.size())||!cin) return -1;
-	
+
 	//check that quantity is positive--maybe should check some reasonable upper bound, too?
 	if(qty < 1) 
 		return -1;
 	//check that seat is valid
-	
+
 	if(seat_id < "A" || seat_id > "H")
 		return -1;
-			
+
 	//add order item
 	order_items.push_back(Order_Item(seat_id, order_id, menu_item_id, qty));
 	return order_items.size();
@@ -601,7 +601,7 @@ int ROMS_Menu::updateOrderItem(int order_id, int menu_item_id, int qty, string s
 //DTC C.2 Start
 //ADD menu item
 int ROMS_Menu::updateMenuItem(int menu_id, int cat_id, int recipe_id, string menu_item_name, double price, string description) {
-	
+
 	int i = 0;
 
 	// Check existence menu item id
@@ -649,46 +649,78 @@ int ROMS_Menu::updateMenuItem(int menu_id, int cat_id, int recipe_id, string men
 //JZ C3 Begin
 double ROMS_Menu::display_total_sales_for_menuitem(int menu_item_id) 
 {
-    double total=0.0;
-    double price=0.0;
-    double qty=0.0;
+	double total=0.0;
+	double price=0.0;
+	double qty=0.0;
 	for (int i=0; i<menu_items.size(); i++)
 	{
-        if (menu_items[i].get_menu_item_id()==menu_item_id)
-        {
-            price=menu_items[i].get_price();  //have price                                            
-            for (int j=0; j<order_items.size(); j++)
-            {
-                if (order_items[j].get_menu_item_id()==menu_item_id)
-                {
-                    qty=order_items[j].get_qty();        //have quantity                                      
-                    total+=(qty *price);
-                }     
-            }
-        }
-    }   
-    return total;
+		if (menu_items[i].get_menu_item_id()==menu_item_id)
+		{
+			price=menu_items[i].get_price();  //have price                                            
+			for (int j=0; j<order_items.size(); j++)
+			{
+				if (order_items[j].get_menu_item_id()==menu_item_id)
+				{
+					qty=order_items[j].get_qty();        //have quantity                                      
+					total+=(qty *price);
+				}     
+			}
+		}
+	}   
+	return total;
 }
 
 int ROMS_Menu::add_recipe(int id, string chef, string instructions)
 {
-    int i = 0;
-    int num=0;
+	int i = 0;
+	int num=0;
 
 	for(i=0; i< recipes.size(); ++i) // Check existence of recipe ID
-    {
-        if(recipes[i].get_rec_id() == id) 
-        {   
-            break;
-        }
-    }
+	{
+		if(recipes[i].get_rec_id() == id) 
+		{   
+			break;
+		}
+	}
 
 	if((i < recipes.size())||!cin) 
 		return -1;
 
 	Recipe recipe(id,chef,Instructions(instructions));
 	recipes.push_back(recipe);                       
-    return 1;
+	return 1;
 }
 
 //JZ C3 End
+
+map<Point,double> ROMS_Menu::grafTotalSales()  //Project II Part D.1 M.O.
+{
+	map<Point,double> totsale;
+	for(int i=0; i < orders.size(); ++i) //For Every order exist
+	{		
+		int sales = 0;
+		int order_id = orders[i].get_order_id(); // Save The order ID
+		for (int j = 0; j < (int)order_items.size(); ++j) // For every order item exist
+		{
+			//select an order item for the current order
+			if(order_id == order_items[j].get_order_id())  //If order id is the same
+			{
+				int menu_item_id = order_items[j].get_menu_item_id(); // Save the menu item id
+				double item_price = 0.;
+				for (int k = 0; k < (int) menu_items.size(); ++k)  //For Every menu item exist
+				{
+					if(menu_item_id == menu_items[k].get_menu_item_id())  //If menu item id is the same
+					{
+						item_price = menu_items[k].get_price(); //Save the menu item price
+						break;
+					}
+				}
+				//add the sale of this item to the table total
+				sales += item_price * order_items[j].get_qty(); //Calculate the sales for one order 
+			}
+		}
+		totsale[Point(orders[i].get_date().month(),orders[i].get_date().year())] += sales; // Insert the total sales base on month to map
+	}
+	
+	return totsale;
+}

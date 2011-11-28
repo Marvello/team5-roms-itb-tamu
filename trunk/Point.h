@@ -25,5 +25,13 @@ inline bool operator!=(Point a, Point b) { return !(a==b); }
 
 //------------------------------------------------------------------------------
 
+inline bool operator<(Point a, Point b) {
+	if  (a.y != b.y) return a.y < b.y;
+	else return a.x < b.x;
+}
+
+//------------------------------------------------------------------------------
+
+
 #endif // POINT_GUARD
 

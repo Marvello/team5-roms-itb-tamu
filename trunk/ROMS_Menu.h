@@ -8,7 +8,9 @@
 #include "Ingredient.h"
 #include "Order.h"
 #include "Order_Item.h"
+#include "Point.h"
 #include "std_lib_facilities.h"
+#include <map>
 
 using namespace std;
 
@@ -21,7 +23,8 @@ namespace ROMS{
 	Find_category_sales, Find_table_sales, Find_menu_item_sales,
 	Update_add_order_item, Update_add_menu_item, Update_add_recipe,
 	Tables_button, Orders_button, Categories_button, Recipes_button, Menu_items_button,
-	Display_window, Menu_bar_cb, Find_menu_item_button, Add_recipe_button//JZ C3
+	Display_window, Menu_bar_cb, Find_menu_item_button, Add_recipe_button,//JZ C3
+	Graf_totsales //Project II Part D.1 M.O.
 	};
    
 	struct InvalidType : std::runtime_error {
@@ -66,6 +69,7 @@ public:
    void save_and_exit() const;//JZ B1
    double display_total_sales_for_menuitem(int menu_item_id); //JZ C3
    int add_recipe(int id, string chef, string instructions);//JZ C3
+   map<Point,double> grafTotalSales();  //Project II Part D.1 M.O.
    	
   	
    //show functions added to support GUI interface
